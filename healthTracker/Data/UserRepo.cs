@@ -33,6 +33,7 @@ namespace healthTracker.Data
         
         public bool Delete(User user)
         {
+            // todo delete everything with association to this user! 
             _dbContext.Remove(user);
             int saveResults = _dbContext.SaveChanges();
             return saveResults > 0;
