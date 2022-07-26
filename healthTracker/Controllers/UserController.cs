@@ -93,7 +93,7 @@ namespace healthTracker.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newUser.Id }, newUser );
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
             User? user = _userRepo.GetById(id);
@@ -107,7 +107,7 @@ namespace healthTracker.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public ActionResult<IBaseOutDto> Update(int id, UserInDto updatedUser)
         {
             User? user = _userRepo.GetById(id);

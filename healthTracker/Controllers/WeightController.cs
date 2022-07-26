@@ -67,5 +67,60 @@ namespace healthTracker.Controllers
                 return NotFound();
             return Ok(weight.ConvertToDto());
         }
+
+        [HttpPost]
+        public ActionResult<IBaseOutDto> Add(WeightInDto weightIn)
+        {
+            User? user = _weightRepo.GetUserById(weightIn.UserId);
+            if (user == null)
+                return BadRequest("User not found!");
+
+            Weight newWeight = new()
+            {
+                UserId = weightIn.UserId,
+                Poundage = weightIn.Poundage,
+                Date = weightIn.Date,
+                Units = weightIn.Units,
+                DateCreated = DateTime.Now,
+                DateUpdated = DateTime.Now
+            };
+
+            bool success = _weightRepo.Add(newWeight);
+            if (!success)
+                return Problem();
+            return CreatedAtAction(nameof(GetById), new { id = newWeight.Id }, newWeight);
+        }
+
+        [HttpDelete("{id:int}")]
+        public ActionResult Delete(int id)
+        {
+            Weight? weight = _weightRepo.GetById(id);
+            if (weight == null)
+                return NotFound();
+
+            bool success = _weightRepo.Delete(weight);
+            if (!success)
+                return Problem();
+            return NoContent();
+        }
+
+        [HttpPut("{id:int}")]
+        public ActionResult<IBaseOutDto> Update(int id, WeightInDto updatedWeight)
+        {
+            Weight? weight = _weightRepo.GetById(id);
+            if (weight == null)
+                return NotFound();
+
+            weight.Poundage = updatedWeight.Poundage;
+            weight.Date = updatedWeight.Date;
+            weight.Units = updatedWeight.Units;
+            weight.DateUpdated = DateTime.Now;
+
+            bool success = _weightRepo.Update(weight);
+            if (!success)
+                return Problem();
+
+            return Ok(weight.ConvertToDto());
+        }
     }
 }
