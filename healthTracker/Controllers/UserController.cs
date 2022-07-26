@@ -58,10 +58,10 @@ namespace healthTracker.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<IBaseOutDto> GetById(int id)
         {
-            User? u = _userRepo.GetById(id);
+            User? user = _userRepo.GetById(id);
 
-            if (u != null)
-                return Ok(u.ConvertToDto());
+            if (user != null)
+                return Ok(user.ConvertToDto());
 
             return NotFound();
         }
