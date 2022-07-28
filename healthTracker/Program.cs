@@ -1,5 +1,7 @@
+using healthTracker.Authentication;
 using healthTracker.Config;
 using healthTracker.Data;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,12 @@ builder.Services.AddOptions();
 builder.Services.Configure<HealthTrackerOptions>(
     builder.Configuration.GetSection(HealthTrackerOptions.ConfigName));
 
+builder.Services.AddAuthentication().AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserOnly", policy => policy.RequireClaim("Email"));
+});
+
 
 var app = builder.Build();
 
@@ -36,6 +44,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -79,6 +79,7 @@ namespace healthTracker.Controllers
                 FirstName = userIn.FirstName,
                 LastName = userIn.LastName,
                 Email = userIn.Email,
+                Password = userIn.Password,
                 Gender = userIn.Gender,
                 Provider = userIn.Provider,
                 Units = userIn.Units,
