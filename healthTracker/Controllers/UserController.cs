@@ -80,6 +80,7 @@ namespace healthTracker.Controllers
                 LastName = userIn.LastName,
                 Email = userIn.Email,
                 Password = userIn.Password,
+                DateOfBirth = userIn.DateOfBirth,
                 Gender = userIn.Gender,
                 Provider = userIn.Provider,
                 Units = userIn.Units,
@@ -119,6 +120,8 @@ namespace healthTracker.Controllers
             user.FirstName = updatedUser.FirstName;
             user.LastName = updatedUser.LastName;
             user.Email = updatedUser.Email;
+            user.Password = updatedUser.Password;
+            user.DateOfBirth = updatedUser.DateOfBirth;
             user.Gender = updatedUser.Gender;
             user.Provider = updatedUser.Provider;
             user.Units = updatedUser.Units;
