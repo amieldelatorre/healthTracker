@@ -15,6 +15,8 @@ namespace healthTracker.Models
         [Required]
         public string? Password { get; set; }
         [Required]
+        public DateTime DateOfBirth { get; set; }
+        [Required]
         public GenderEnum Gender { get; set; }
         public ProviderEnum Provider { get; set; }
         [Required]
@@ -28,6 +30,7 @@ namespace healthTracker.Models
                 FirstName = FirstName,
                 LastName = LastName,
                 Email = Email,
+                DateOfBirth = DateOfBirth,
                 Gender = Gender,
                 DateCreated = DateCreated,
                 DateUpdated = DateUpdated,
