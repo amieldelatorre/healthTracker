@@ -24,6 +24,11 @@ namespace healthTracker.Data
             return true;
         }
 
+        public User? GetUserByEmail(string email)
+        {
+            return _dbContext.Users.SingleOrDefault(u => u.Email == email);
+        }
+
         public bool Add(User user)
         {
             _dbContext.Users.Add(user);
@@ -44,6 +49,11 @@ namespace healthTracker.Data
             _dbContext.Update(updatedUser);
             int saveResults = _dbContext.SaveChanges();
             return saveResults > 0;
+        }
+
+        public bool IsValidLogin(string email, string password)
+        {
+            return _dbContext.Users.FirstOrDefault(u => u.Email ==email && u.Password == password) != null;
         }
     }
 

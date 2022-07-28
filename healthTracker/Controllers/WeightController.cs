@@ -1,12 +1,13 @@
 ﻿using healthTracker.Data;
 using healthTracker.Dtos;
 using healthTracker.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace healthTracker.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class WeightController : ControllerBase
     {
@@ -19,7 +20,7 @@ namespace healthTracker.Controllers
             _weightRepo = weightRepo;
         }
 
-        [HttpGet("Discovery")]
+        [HttpGet("[controller]/Discovery")]
         public ActionResult Discovery()
         {
             string initialPath = "/api/Weight";
@@ -59,7 +60,7 @@ namespace healthTracker.Controllers
             return Ok(discovery);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("[controller]/{id:int}")]
         public ActionResult<IBaseOutDto> GetById(int id)
         {
             Weight? weight = _weightRepo.GetById(id);
@@ -68,7 +69,7 @@ namespace healthTracker.Controllers
             return Ok(weight.ConvertToDto());
         }
 
-        [HttpPost]
+        [HttpPost("[controller]")]
         public ActionResult<IBaseOutDto> Add(WeightInDto weightIn)
         {
             User? user = _weightRepo.GetUserById(weightIn.UserId);
@@ -91,7 +92,7 @@ namespace healthTracker.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newWeight.Id }, newWeight);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("[controller]/{id:int}")]
         public ActionResult Delete(int id)
         {
             Weight? weight = _weightRepo.GetById(id);
@@ -104,7 +105,7 @@ namespace healthTracker.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("[controller]/{id:int}")]
         public ActionResult<IBaseOutDto> Update(int id, WeightInDto updatedWeight)
         {
             Weight? weight = _weightRepo.GetById(id);
@@ -121,6 +122,26 @@ namespace healthTracker.Controllers
                 return Problem();
 
             return Ok(weight.ConvertToDto());
+        }
+
+        [Authorize]
+        [Authorize(AuthenticationSchemes = "BasicAuthentication")]
+        [Authorize(Policy = "UserOnly")]
+        [Route("User/{id:int}/Weights")]
+        [HttpGet]
+        public ActionResult<IEnumerable<WeightOutDto>> GetWeightsByUserId(int id)
+        {
+            User? user = _weightRepo.GetUserById(id);
+            if (user == null || user.Email != User.Claims.ToList()[0].Value)
+                return NotFound("Invalid user");
+            
+            IEnumerable<Weight> weights = _weightRepo.GetByUserId(id);
+            List<WeightOutDto> weightOutDtos = new();
+
+            foreach (Weight weight in weights)
+                weightOutDtos.Add((WeightOutDto)weight.ConvertToDto());
+
+            return Ok(weightOutDtos);
         }
     }
 }

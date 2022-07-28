@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using healthTracker.Data;
 
@@ -10,9 +11,10 @@ using healthTracker.Data;
 namespace healthTracker.Migrations
 {
     [DbContext(typeof(HealthTrackerContext))]
-    partial class HealthTrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20220728052224_AddUserPassword")]
+    partial class AddUserPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.5");

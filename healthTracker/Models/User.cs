@@ -13,6 +13,8 @@ namespace healthTracker.Models
         [Required]
         public string? Email { get; set; }
         [Required]
+        public string? Password { get; set; }
+        [Required]
         public GenderEnum Gender { get; set; }
         public ProviderEnum Provider { get; set; }
         [Required]
