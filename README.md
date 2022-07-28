@@ -1,1 +1,2 @@
 # healthTracker
+Repo was made around May, however, accidentally put a secret key on github. Wasn't sure how to delete a commit completely so deleted the whole branch. Accidentally lost some unmerged progress 
