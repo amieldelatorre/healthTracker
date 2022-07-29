@@ -2,7 +2,7 @@
 
 namespace healthTracker.Data
 {
-    public abstract class INonUserRepo
+    public abstract class INonUserRepo : IRepo
     {
         private readonly HealthTrackerContext _context;
 

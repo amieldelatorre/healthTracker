@@ -2,14 +2,14 @@
 
 namespace healthTracker.Data
 {
-    public interface IUserRepo
+    public abstract class IUserRepo : IRepo
     {
-        public User? GetById(int id);
-        public bool EmailExists(string email);
-        public User? GetUserByEmail(string email);
-        public bool Add(User user);
-        public bool Delete(User user);
-        public bool Update(User user);
-        public bool IsValidLogin(string email, string password);
+        public abstract User? GetById(int id);
+        public abstract bool EmailExists(string email);
+        public abstract User? GetUserByEmail(string email);
+        public abstract bool Add(User user);
+        public abstract bool Delete(User user);
+        public abstract bool Update(User user);
+        public abstract bool IsValidLogin(string email, string password);
     }
 }
