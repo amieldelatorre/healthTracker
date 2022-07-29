@@ -13,12 +13,12 @@ namespace healthTracker.Data
 
         public override Weight? GetById(int id)
         {
-            return _dbContext.Weights.SingleOrDefault(bf => bf.Id == id);
+            return _dbContext.Weights.SingleOrDefault(weight => weight.Id == id);
         }
 
-        public override IEnumerable<Weight> GetByUserId(int userId)
+        public override IQueryable<Weight> GetByUserId(int userId)
         {
-            return _dbContext.Weights.Where(bf => bf.UserId == userId);
+            return _dbContext.Weights.Where(weight => weight.UserId == userId);
         }
 
         public override bool Add(Weight weight)

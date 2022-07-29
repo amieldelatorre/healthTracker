@@ -4,6 +4,7 @@ using healthTracker.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Dynamic.Core;
 
 namespace healthTracker.Controllers
 {
@@ -134,9 +135,14 @@ namespace healthTracker.Controllers
             User? user = _weightRepo.GetUserById(id);
             if (user == null || user.Email != User.Claims.ToList()[0].Value)
                 return NotFound("Invalid user");
-            
-            IEnumerable<Weight> weights = _weightRepo.GetByUserId(id);
+
+            IQueryable<Weight> weights = _weightRepo.GetByUserId(id);
             int total = weights.Count();
+
+            string orderBy = String.IsNullOrEmpty(Request.Query["orderby"]) ? _weightRepo.DefaultDateSort : Request.Query["orderby"];
+            string order = Request.Query["order"];
+
+            string orderByBuilder = !String.IsNullOrEmpty(order) && (order.ToLower() == "asc" || order.ToLower() == "ascending") ? orderBy + " ASC" : orderBy + " DESC"; 
 
             // int limit is defined here
             if (String.IsNullOrEmpty(Request.Query["limit"].ToString().Trim()) || !int.TryParse(Request.Query["limit"].ToString().Trim(), out int limit))
@@ -149,7 +155,7 @@ namespace healthTracker.Controllers
             List<WeightOutDto> weightOutDtos = new();
 
             // Skip & Limit are LINQ equivalent of Offset & Limit
-            foreach (Weight weight in weights.Skip(offset).Take(limit))
+            foreach (Weight weight in weights.OrderBy(orderByBuilder).Skip(offset).Take(limit))
                 weightOutDtos.Add((WeightOutDto)weight.ConvertToDto());
 
             var collection = new
@@ -157,7 +163,8 @@ namespace healthTracker.Controllers
                 Values = weightOutDtos,
                 Total = total,
                 Limit = limit,
-                Offset = offset
+                Offset = offset,
+                Order = orderByBuilder.Replace("@0", orderBy)
             };
 
             return Ok(collection);
