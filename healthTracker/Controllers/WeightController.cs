@@ -129,19 +129,38 @@ namespace healthTracker.Controllers
         [Authorize(Policy = "UserOnly")]
         [Route("User/{id:int}/Weights")]
         [HttpGet]
-        public ActionResult<IEnumerable<WeightOutDto>> GetWeightsByUserId(int id)
+        public ActionResult GetWeightsByUserId(int id)
         {
             User? user = _weightRepo.GetUserById(id);
             if (user == null || user.Email != User.Claims.ToList()[0].Value)
                 return NotFound("Invalid user");
             
             IEnumerable<Weight> weights = _weightRepo.GetByUserId(id);
+            int total = weights.Count();
+
+            // int limit is defined here
+            if (String.IsNullOrEmpty(Request.Query["limit"].ToString().Trim()) || !int.TryParse(Request.Query["limit"].ToString().Trim(), out int limit))
+                limit = _weightRepo.DefaultLimit;
+            // int offset is defined here
+            if (String.IsNullOrEmpty(Request.Query["offset"].ToString().Trim()) || !int.TryParse(Request.Query["offset"].ToString().Trim(), out int offset))
+                offset = _weightRepo.DefaultOffset;
+
+
             List<WeightOutDto> weightOutDtos = new();
 
-            foreach (Weight weight in weights)
+            // Skip & Limit are LINQ equivalent of Offset & Limit
+            foreach (Weight weight in weights.Skip(offset).Take(limit))
                 weightOutDtos.Add((WeightOutDto)weight.ConvertToDto());
 
-            return Ok(weightOutDtos);
+            var collection = new
+            {
+                Values = weightOutDtos,
+                Total = total,
+                Limit = limit,
+                Offset = offset
+            };
+
+            return Ok(collection);
         }
     }
 }
